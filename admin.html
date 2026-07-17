@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- 🚀 תגיות מטא מיוחדות למסך מלא אמיתי (כאפליקציה) בנייד -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <meta charset="UTF-8">
+    <title>ניהול שילוט דיגיטלי - אורדוד</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #121214;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            min-height: 100dvh; /* 🌟 עודכן ל-100dvh למניעת חיתוך של המסך בניידים */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .admin-container {
+            width: 90%;
+            max-width: 700px;
+            background: #1a1a24;
+            border: 1px solid #2d2d3d;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-sizing: border-box;
+            margin: 20px 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 2rem;
+            border-bottom: 2px solid #3d3d5c;
+            padding-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-size: 1.1rem;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            background: #252538;
+            border: 1px solid #3d3d5c;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            border-color: #3182ce;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        /* חלוקה של שדות ניהול הצידיים לשתי עמודות במחשב */
+        .sides-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .side-section-title {
+            grid-column: span 2;
+            font-size: 1.2rem;
+            color: #8b7355;
+            margin-top: 10px;
+            border-bottom: 1px dashed #3d3d5c;
+            padding-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: #3182ce;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 15px;
+        }
+
+        .btn-submit:hover {
+            background: #2b6cb0;
+        }
+
+        .status-msg {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            display: none;
+        }
+
+        .status-success { color: #48bb78; }
+        .status-error { color: #f56565; }
+
+        /* מסך נעילת מנהל */
+        .lock-screen {
+            position: fixed !important; top: 0 !important; left: 0 !important;
+            width: 100vw !important; height: 100dvh !important; /* 🌟 עודכן ל-100dvh למסך מלא מושלם בנייד */
+            background-color: #0f0f12 !important; display: flex !important;
+            flex-direction: column !important; justify-content: center !important;
+            align-items: center !important; z-index: 999999999 !important;
+            color: white !important; direction: rtl !important;
+        }
+        .lock-box {
+            background: #1a1a24 !important; padding: 40px !important; border-radius: 16px !important;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6) !important; text-align: center !important;
+            max-width: 400px !important; width: 90% !important; border: 1px solid #2d2d3d !important;
+        }
+        .lock-box h2 { font-size: 1.8rem !important; color: #ffffff !important; margin: 0 0 15px 0 !important; }
+        .lock-box p { color: #a0aec0 !important; font-size: 1.1rem !important; margin: 0 0 20px 0 !important; }
+        .lock-box input {
+            width: 100% !important; padding: 14px !important; border: 2px solid #3d3d5c !important;
+            background: #252538 !important; color: white !important; border-radius: 8px !important;
+            text-align: center !important; font-size: 1.3rem !important; box-sizing: border-box !important;
+            outline: none !important; margin-bottom: 15px !important;
+        }
+        .lock-box button {
+            width: 100% !important; padding: 14px !important; background: #3182ce !important;
+            color: white !important; border: none !important; border-radius: 8px !important;
+            font-size: 1.2rem !important; font-weight: bold !important; cursor: pointer !important;
+        }
+
+        /* רספונסיביות לניידים */
+        @media (max-width: 768px) {
+            .sides-grid {
+                grid-template-columns: 1fr;
+            }
+            .side-section-title {
+                grid-column: span 1;
+            }
+            .admin-container {
+                padding: 20px;
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- מסך נעילה לפני כניסה לפאנל הניהול -->
+<div id="adminLock" class="lock-screen">
+    <div class="lock-box">
+        <h2>מערכת ניהול שילוט</h2>
+        <p>הזן קוד גישה למנהל:</p>
+        <input type="tel" id="adminPasswordInput" placeholder="הקלד קוד מנהל..." pattern="[0-9]*" inputmode="numeric">
+        <button type="button" onclick="checkAdminPassword()">כניסה לניהול</button>
+        <p id="adminErrorMsg" style="color: #f56565 !important; margin: 10px 0 0 0 !important; display: none !important; font-size: 0.9rem !important;">קוד שגוי, נסה שוב!</p>
+    </div>
+</div>
+
+<div class="admin-container">
+    <h1>לוח בקרה ועדכון תוכן</h1>
+    
+    <form id="signageForm" onsubmit="saveToFirebase(event)">
+        <!-- כותרת ראשית והודעה מרכזית -->
+        <div class="form-group">
+            <label for="inputTitle">כותרת ראשית (תיבה אמצעית)</label>
+            <input type="text" id="inputTitle" placeholder="הכנס כותרת בולטת..." required>
+        </div>
+
+        <div class="form-group">
+            <label for="inputMessage">הודעה מרכזית</label>
+            <textarea id="inputMessage" rows="4" placeholder="הכנס את תוכן ההודעה המרכזית..." required></textarea>
+        </div>
+
+        <!-- פריסת שדות צד ימין ושמאל -->
+        <div class="sides-grid">
+            
+            <!-- צד ימין -->
+            <div class="side-section-title">👉 עדכונים בצד ימין</div>
+            
+            <div class="form-group">
+                <label for="inputScrollRight">טקסט נגלל (עליון)</label>
+                <textarea id="inputScrollRight" rows="4" placeholder="רשימת הודעות נגללות (למשל ימי הולדת...)" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="inputFixedRight">טקסט קבוע (תחתון)</label>
+                <textarea id="inputFixedRight" rows="4" placeholder="הודעה קבועה תחתונה (למשל: לעילוי נשמת...)" required></textarea>
+            </div>
+
+            <!-- צד שמאל -->
+            <div class="side-section-title">👈 עדכונים בצד שמאל</div>
+
+            <div class="form-group">
+                <label for="inputScrollLeft">טקסט נגלל (עליון)</label>
+                <textarea id="inputScrollLeft" rows="4" placeholder="רשימת הודעות נגללות בצד שמאל..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="inputFixedLeft">טקסט קבוע (תחתון)</label>
+                <textarea id="inputFixedLeft" rows="4" placeholder="הודעה קבועה תחתונה בצד שמאל..." required></textarea>
+            </div>
+
+        </div>
+
+        <!-- סרגל מבזקים תחתון -->
+        <div class="form-group" style="margin-top: 15px;">
+            <label for="inputTicker">עדכונים רצים (סרגל תחתון)</label>
+            <input type="text" id="inputTicker" placeholder="הקלד כאן את המבזקים שירוצו בתחתית המסך..." required>
+        </div>
+
+        <button type="submit" class="btn-submit">שמור ועדכן מסך שילוט</button>
+    </form>
+
+    <div id="statusMsg" class="status-msg"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+  // שימוש באותו קוד צפייה/ניהול
+  const ADMIN_PASSWORD = "5555";
+
+  function checkAdminPassword() {
+      const entered = document.getElementById('adminPasswordInput').value;
+      if (entered === ADMIN_PASSWORD) {
+          document.getElementById('adminLock').style.setProperty('display', 'none', 'important');
+          // טעינת הנתונים הקיימים ברגע שנכנסים
+          loadExistingData();
+      } else {
+          document.getElementById('adminErrorMsg').style.setProperty('display', 'block', 'important');
+      }
+  }
+
+  // הגדרות ה-Firebase שלך
+  const firebaseConfig = {
+    apiKey: "AIzaSyCNh5bjmUt4aQ86gh9UvDidaTWLSulbIrs",
+    authDomain: "ordavid-5e2b0.firebaseapp.com",
+    databaseURL: "https://ordavid-5e2b0-default-rtdb.firebaseio.com",
+    projectId: "ordavid-5e2b0",
+    storageBucket: "ordavid-5e2b0.firebasestorage.app",
+    messagingSenderId: "491182630675",
+    appId: "1:491182630675:web:d2df61684dfa5eb824dce6"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  // טעינת הנתונים הנוכחיים מה-Firebase לתוך הטופס
+  function loadExistingData() {
+      database.ref('signage').once('value').then((snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+              document.getElementById('inputTitle').value = data.title || "";
+              document.getElementById('inputMessage').value = data.message || "";
+              document.getElementById('inputScrollRight').value = data.scrollRight || "";
+              document.getElementById('inputFixedRight').value = data.fixedRight || "";
+              document.getElementById('inputScrollLeft').value = data.scrollLeft || "";
+              document.getElementById('inputFixedLeft').value = data.fixedLeft || "";
+              document.getElementById('inputTicker').value = data.ticker || "";
+          }
+      }).catch((error) => {
+          console.error("שגיאה בטעינת הנתונים:", error);
+      });
+  }
+
+  // שמירת הנתונים החדשים לתוך ה-Firebase
+  function saveToFirebase(event) {
+      event.preventDefault();
+      
+      const statusElement = document.getElementById('statusMsg');
+      statusElement.style.display = 'none';
+
+      const updatedData = {
+          title: document.getElementById('inputTitle').value,
+          message: document.getElementById('inputMessage').value,
+          scrollRight: document.getElementById('inputScrollRight').value,
+          fixedRight: document.getElementById('inputFixedRight').value,
+          scrollLeft: document.getElementById('inputScrollLeft').value,
+          fixedLeft: document.getElementById('inputFixedLeft').value,
+          ticker: document.getElementById('inputTicker').value
+      };
+
+      database.ref('signage').set(updatedData)
+          .then(() => {
+              statusElement.className = "status-msg status-success";
+              statusElement.innerText = "הנתונים עודכנו בהצלחה ונשלחו למסך! 🎉";
+              statusElement.style.display = 'block';
+              
+              // העלמת הודעת ההצלחה אחרי 4 שניות
+              setTimeout(() => {
+                  statusElement.style.display = 'none';
+              }, 4000);
+          })
+          .catch((error) => {
+              statusElement.className = "status-msg status-error";
+              statusElement.innerText = "שגיאה בשמירת הנתונים: " + error.message;
+              statusElement.style.display = 'block';
+          });
+  }
+</script>
+
+</body>
+</html>

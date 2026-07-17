@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>שילוט דיגיטלי - אור דוד</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;800&family=Varela+Round&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.88);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --text-dark: #2d3748;
+            --accent-gold: #8b7355;
+            --accent-glow: rgba(139, 115, 85, 0.1);
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100dvw;
+            height: 100dvh;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        /* ברירת מחדל למסך רוחבי טבעי */
+        #app-container {
+            width: 100dvw;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: url('masah.png') no-repeat center center;
+            background-size: 100% 100%;
+            color: var(--text-dark);
+            font-family: 'Assistant', sans-serif;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 🔄 גיבוי: כשהמכשיר מוחזק לאורך והמערכת לא תמכה בסיבוב האוטומטי, נאלץ סיבוב ב-CSS */
+        @media (orientation: portrait) {
+            #app-container {
+                width: 100dvh !important;
+                height: 100dvw !important;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(-90deg);
+                transform-origin: center center;
+            }
+            
+            .main-layout { margin-top: 22vh !important; height: 70vh !important; gap: 1.5vw !important; }
+            .hebrew-date-container { top: 2vh !important; left: 2vw !important; width: 18vw !important; padding: 6px !important; border-radius: 10px !important; gap: 0.2vh !important; }
+            .hebrew-date-header { font-size: 1.4vw !important; }
+            .live-time-display { font-size: 2.2vw !important; }
+            .center-column h1 { font-size: 4.2vw !important; }
+            .center-column p { font-size: 2.6vw !important; max-height: 45vh !important; }
+            .sub-box-fixed { font-size: 1.8vw !important; height: 18vh !important; padding: 1vh 1vw !important; }
+            .scroll-right-content, .scroll-left-content { font-size: 1.8vw !important; }
+            .ticker { font-size: 2.8vw !important; }
+            .view-lock-box { max-width: 290px !important; padding: 20px !important; }
+        }
+
+        /* אלמנטים פנימיים */
+        .hebrew-date-container {
+            position: absolute;
+            top: 3vh; left: 3vw; width: 18vw; text-align: center; z-index: 20; direction: rtl;
+            display: flex; flex-direction: column; gap: 0.2vh; 
+            background: rgba(255, 255, 255, 0.92); border: 1px solid var(--glass-border);
+            border-radius: 12px; padding: 8px; box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.08);
+        }
+        .hebrew-date-header { font-family: 'Varela Round', sans-serif; font-size: 1.2vw; font-weight: 700; color: #4a5568; }
+        .live-time-display { font-family: 'Varela Round', sans-serif; font-size: 1.9vw; font-weight: 800; color: var(--accent-gold); font-variant-numeric: tabular-nums; }
+
+        .main-layout { display: grid; grid-template-columns: 26% 48% 26%; height: 68vh; box-sizing: border-box; padding: 0 2vw; margin-top: 24vh; gap: 1.8vw; }
+        .column-container { display: flex; flex-direction: column; height: 100%; gap: 2vh; }
+
+        .sub-box-scroll {
+            flex: 1; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px;
+            position: relative; overflow: hidden; box-sizing: border-box; padding: 2vh 1.2vw;
+            box-shadow: 0 8px 32px 0 var(--accent-glow);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+        }
+
+        .sub-box-fixed {
+            height: 18vh; background: rgba(255, 249, 241, 0.95); border: 1px solid rgba(230, 215, 195, 0.8);
+            border-radius: 20px; box-sizing: border-box; padding: 1.5vh 1vw; display: flex; justify-content: center;
+            align-items: center; text-align: center; font-family: 'Varela Round', sans-serif; font-size: 1.5vw;
+            color: #70593e; font-weight: 700; box-shadow: 0 8px 24px rgba(139, 115, 85, 0.15); overflow: hidden; border-bottom: 4px solid var(--accent-gold);
+        }
+
+        .scroll-right-content, .scroll-left-content { position: absolute; width: 100%; text-align: center; white-space: pre-line; font-size: 1.5vw; font-weight: 600; color: #7a004b; transform: translate3d(0, 0, 0); backface-visibility: hidden; perspective: 1000px; will-change: transform; }
+        .scroll-right-content { animation: scrollUpRight 28s linear infinite; }
+        .scroll-left-content { animation: scrollUpLeft 24s linear infinite; }
+
+        @keyframes scrollUpRight { 0% { transform: translate3d(0, 45vh, 0); opacity: 0; } 5% { opacity: 1; } 95% { opacity: 1; } 100% { transform: translate3d(0, -105%, 0); opacity: 0; } }
+        @keyframes scrollUpLeft { 0% { transform: translate3d(0, 45vh, 0); opacity: 0; } 5% { opacity: 1; } 95% { opacity: 1; } 100% { transform: translate3d(0, -105%, 0); opacity: 0; } }
+
+        .center-column {
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            background: rgba(255, 255, 255, 0.94); border: 2px solid rgba(255, 255, 255, 0.9); border-radius: 24px;
+            height: 100%; padding: 3vh 2vw; box-sizing: border-box; overflow: hidden; box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.06); position: relative;
+        }
+        .center-column::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient(90deg, #bfa37a, #8b7355, #bfa37a); border-radius: 24px 24px 0 0; }
+        .center-column h1 { font-family: 'Varela Round', sans-serif; font-size: 3.5vw; margin: 0 0 2vh 0; font-weight: 800; color: var(--accent-gold); line-height: 1.15; width: 100%; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+        .center-column p { font-family: 'Assistant', sans-serif; font-size: 2.1vw; margin: 0; line-height: 1.4; color: var(--text-dark); font-weight: 400; width: 100%; max-height: 46vh; overflow: hidden; }
+
+        .ticker-wrap { width: 100%; height: 7vh; background: #1e293b; border-top: 3px solid var(--accent-gold); overflow: hidden; display: flex; align-items: center; box-sizing: border-box; position: relative; }
+        .ticker { display: inline-block; white-space: nowrap; position: absolute; left: 0; font-family: 'Varela Round', sans-serif; font-size: 1.9vw; font-weight: 800; color: #f6e05e; padding-right: 30px; animation: marqueeLeftToRight 30s linear infinite; transform: translate3d(-100%, 0, 0); backface-visibility: hidden; perspective: 1000px; will-change: transform; }
+        @keyframes marqueeLeftToRight { 0% { transform: translate3d(-100%, 0, 0); } 100% { transform: translate3d(100dvw, 0, 0); } }
+
+        /* מסך נעילה */
+        .view-lock-screen {
+            position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important;
+            background: radial-gradient(circle, #1e1e30 0%, #0f0f1a 100%) !important; display: flex !important;
+            flex-direction: column !important; justify-content: center !important; align-items: center !important; z-index: 999999999 !important;
+            font-family: 'Varela Round', sans-serif !important; color: white !important; direction: rtl !important; box-sizing: border-box !important;
+        }
+        .view-lock-box {
+            background: rgba(30, 30, 48, 0.75) !important; backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important;
+            padding: 25px !important; border-radius: 20px !important; box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+            text-align: center !important; max-width: 360px !important; width: 80% !important; border: 1px solid rgba(255,255,255,0.1) !important; box-sizing: border-box !important;
+        }
+        .view-lock-box h2 { font-size: 1.6rem !important; color: #ffffff !important; margin: 0 0 8px 0 !important; font-weight: 800 !important; }
+        .view-lock-box p { color: #a0aec0 !important; font-size: 0.95rem !important; margin: 0 0 15px 0 !important; }
+        .view-lock-box input { width: 100% !important; padding: 10px !important; border: 2px solid #4a5568 !important; background: rgba(255,255,255,0.05) !important; color: white !important; border-radius: 10px !important; text-align: center !important; font-size: 1.2rem !important; box-sizing: border-box !important; outline: none !important; margin-bottom: 12px !important; }
+        .view-lock-box button { width: 100% !important; padding: 11px !important; background: linear-gradient(135deg, #3182ce 0%, #2b6cb0 100%) !important; color: white !important; border: none !important; border-radius: 10px !important; font-size: 1rem !important; font-weight: bold !important; cursor: pointer !important; }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+
+    <div id="viewLock" class="view-lock-screen">
+        <div class="view-lock-box">
+            <h2>שילוט דיגיטלי נעול</h2>
+            <p>הזן קוד גישה כדי לצפות בשילוט:</p>
+            <input type="tel" id="viewPasswordInput" placeholder="הקלד קוד צפייה..." pattern="[0-9]*" inputmode="numeric">
+            <button type="button" onclick="handleAccessAttempt()">כניסה למסך</button>
+            <p id="viewErrorMsg" style="color: #f56565 !important; margin: 10px 0 0 0 !important; display: none !important; font-size: 0.95rem !important; font-weight: bold !important;">קוד שגוי, נסה שוב!</p>
+        </div>
+    </div>
+
+    <!-- שעון ותאריך -->
+    <div class="hebrew-date-container">
+        <div class="hebrew-date-header" id="hebrewDateDisplay">טוען תאריך...</div>
+        <div class="live-time-display" id="timeDisplay">00:00:00</div>
+    </div>
+
+    <!-- גריד התוכן -->
+    <div class="main-layout">
+        <div class="column-container">
+            <div class="sub-box-scroll">
+                <div style="position: relative; flex-grow: 1; overflow: hidden; height: 100%;">
+                    <div class="scroll-right-content" id="displayScrollRight">טוען הודעות ימין...</div>
+                </div>
+            </div>
+            <div class="sub-box-fixed" id="displayFixedRight">טוען הודעה קבועה ימין...</div>
+        </div>
+
+        <div class="center-column">
+            <h1 id="displayTitle">טוען כותרת...</h1>
+            <p id="displayMessage">מתחבר לשרת אור דוד</p>
+        </div>
+
+        <div class="column-container">
+            <div class="sub-box-scroll">
+                <div style="position: relative; flex-grow: 1; overflow: hidden; height: 100%;">
+                    <div class="scroll-left-content" id="displayScrollLeft">טוען הודעות שמאל...</div>
+                </div>
+            </div>
+            <div class="sub-box-fixed" id="displayFixedLeft">טוען הודעה קבועה שמאל...</div>
+        </div>
+    </div>
+
+    <div class="ticker-wrap" id="tickerContainer">
+        <div class="ticker" id="displayTicker">טוען עדכונים רצים...</div>
+    </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+  const VIEW_PASSWORD = "5555";
+
+  // 🚀 הפונקציה החדשה שמאלצת את מערכת ההפעלה להסתובב לרוחב (כמו ביוטיוב)
+  async function forceLandscapeAndFullscreen() {
+      const docEl = document.documentElement;
+      try {
+          // 1. כניסה למצב מסך מלא (חובה כדי לנעול כיוון מסך)
+          if (docEl.requestFullscreen) {
+              await docEl.requestFullscreen();
+          } else if (docEl.webkitRequestFullscreen) {
+              await docEl.webkitRequestFullscreen();
+          }
+
+          // 2. אילוץ סיבוב המכשיר לרוחב - עוקף את נעילת המשתמש בדפדפנים תומכים!
+          if (screen.orientation && screen.orientation.lock) {
+              await screen.orientation.lock('landscape');
+          }
+      } catch (err) {
+          console.log("סיבוב המערכת נחסם או לא נתמך, מופעל גיבוי CSS וירטואלי:", err);
+      }
+  }
+
+  function handleAccessAttempt() {
+      const entered = document.getElementById('viewPasswordInput').value;
+      if (entered === VIEW_PASSWORD) {
+          // הפעלת האילוץ האוטומטי לרוחב
+          forceLandscapeAndFullscreen();
+          
+          // העלמת מסך הנעילה
+          document.getElementById('viewLock').style.setProperty('display', 'none', 'important');
+      } else {
+          document.getElementById('viewErrorMsg').style.setProperty('display', 'block', 'important');
+      }
+  }
+
+  document.getElementById('viewPasswordInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') { handleAccessAttempt(); }
+  });
+
+  // תאריך עברי ולועזי
+  function numToHebrewLetters(num, isYear = false) {
+      if (isYear) num = num % 1000; 
+      const hundreds = ["", "ק", "ר", "ש", "ת", "תק", "תר", "תש", "תת", "תתק"];
+      const tens = ["", "י", "כ", "ל", "מ", "נ", "ס", "ע", "פ", "צ"];
+      const units = ["", "א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט"];
+      if (num === 15) return 'ט"ו'; if (num === 16) return 'ט"ז';
+      let h = Math.floor(num / 100); let t = Math.floor((num % 100) / 10); let u = num % 10;
+      let lastTwo = (num % 100); let result = "";
+      if (h > 0 && h < hundreds.length) result += hundreds[h];
+      if (lastTwo === 15) result += "טו"; else if (lastTwo === 16) result += "טז"; else result += tens[t] + units[u];
+      if (result.length === 1) return result + "'"; else if (result.length > 1) return result.slice(0, -1) + '"' + result.slice(-1);
+      return "";
+  }
+
+  function updateDateTime() {
+      try {
+          const now = new Date();
+          document.getElementById('timeDisplay').innerText = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+          const daysOfWeek = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+          const dayName = "יום " + daysOfWeek[now.getDay()];
+          const formatter = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', { day: 'numeric', month: 'long', year: 'numeric' });
+          const parts = formatter.formatToParts(now);
+          const rawDay = parseInt(parts.find(p => p.type === 'day').value, 10);
+          let month = parts.find(p => p.type === 'month').value;
+          const rawYear = parseInt(parts.find(p => p.type === 'year').value, 10);
+          const hebrewDay = numToHebrewLetters(rawDay);
+          const hebrewYear = "ה" + numToHebrewLetters(rawYear, true);
+          if (month.startsWith('ב')) month = month.substring(1);
+          month = month.replace(/[׳״']/g, "");
+          document.getElementById('hebrewDateDisplay').innerText = `${dayName} ${hebrewDay} ${month} ${hebrewYear}`;
+      } catch (e) { console.error(e); }
+  }
+  updateDateTime(); setInterval(updateDateTime, 1000);
+
+  // Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCNh5bjmUt4aQ86gh9UvDidaTWLSulbIrs",
+    authDomain: "ordavid-5e2b0.firebaseapp.com",
+    databaseURL: "https://ordavid-5e2b0-default-rtdb.firebaseio.com",
+    projectId: "ordavid-5e2b0",
+    storageBucket: "ordavid-5e2b0.firebasestorage.app",
+    messagingSenderId: "491182630675",
+    appId: "1:491182630675:web:d2df61684dfa5eb824dce6"
+  };
+  firebase.initializeApp(firebaseConfig);
+  firebase.database().ref('signage').on('value', (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+          document.getElementById('displayTitle').innerText = data.title || "אין כותרת זמינה";
+          document.getElementById('displayMessage').innerText = data.message || "אין הודעה זמינה";
+          document.getElementById('displayScrollRight').innerText = data.scrollRight || "אין הודעות ימין";
+          document.getElementById('displayScrollLeft').innerText = data.scrollLeft || "אין הודעות שמאל";
+          document.getElementById('displayFixedRight').innerText = data.fixedRight || "לעילוי נשמת";
+          document.getElementById('displayFixedLeft').innerText = data.fixedLeft || "הודעה קבועה";
+          document.getElementById('displayTicker').innerText = (data.ticker && data.ticker.trim() !== "") ? data.ticker : "אין עדכונים זורמים כרגע";
+      }
+  });
+</script>
+
+</body>
+</html>
