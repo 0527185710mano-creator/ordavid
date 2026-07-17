@@ -29,7 +29,7 @@
             background-color: #000;
         }
 
-        /* ברירת מחדל למסך רוחבי טבעי */
+        /* קונטיינר ראשי - במצב רוחבי טבעי */
         #app-container {
             width: 100dvw;
             height: 100dvh;
@@ -45,7 +45,7 @@
             overflow: hidden;
         }
 
-        /* 🔄 גיבוי: כשהמכשיר מוחזק לאורך והמערכת לא תמכה בסיבוב האוטומטי, נאלץ סיבוב ב-CSS */
+        /* 🔄 אילוץ סיבוב מיידי לרוחב ב-CSS (כולל מסך הנעילה!) כשהמכשיר מוחזק לאורך */
         @media (orientation: portrait) {
             #app-container {
                 width: 100dvh !important;
@@ -66,10 +66,19 @@
             .sub-box-fixed { font-size: 1.8vw !important; height: 18vh !important; padding: 1vh 1vw !important; }
             .scroll-right-content, .scroll-left-content { font-size: 1.8vw !important; }
             .ticker { font-size: 2.8vw !important; }
-            .view-lock-box { max-width: 290px !important; padding: 20px !important; }
+            
+            /* התאמת מסך הנעילה כשהוא מסובב וירטואלית */
+            .view-lock-box { 
+                max-width: 290px !important; 
+                padding: 18px !important; 
+            }
+            .view-lock-box h2 { font-size: 1.3rem !important; }
+            .view-lock-box p { font-size: 0.85rem !important; }
+            .view-lock-box input { font-size: 1rem !important; padding: 8px !important; }
+            .view-lock-box button { padding: 9px !important; font-size: 0.9rem !important; }
         }
 
-        /* אלמנטים פנימיים */
+        /* עיצוב שעון ותאריך */
         .hebrew-date-container {
             position: absolute;
             top: 3vh; left: 3vw; width: 18vw; text-align: center; z-index: 20; direction: rtl;
@@ -80,6 +89,7 @@
         .hebrew-date-header { font-family: 'Varela Round', sans-serif; font-size: 1.2vw; font-weight: 700; color: #4a5568; }
         .live-time-display { font-family: 'Varela Round', sans-serif; font-size: 1.9vw; font-weight: 800; color: var(--accent-gold); font-variant-numeric: tabular-nums; }
 
+        /* גריד התוכן */
         .main-layout { display: grid; grid-template-columns: 26% 48% 26%; height: 68vh; box-sizing: border-box; padding: 0 2vw; margin-top: 24vh; gap: 1.8vw; }
         .column-container { display: flex; flex-direction: column; height: 100%; gap: 2vh; }
 
@@ -118,17 +128,36 @@
         .ticker { display: inline-block; white-space: nowrap; position: absolute; left: 0; font-family: 'Varela Round', sans-serif; font-size: 1.9vw; font-weight: 800; color: #f6e05e; padding-right: 30px; animation: marqueeLeftToRight 30s linear infinite; transform: translate3d(-100%, 0, 0); backface-visibility: hidden; perspective: 1000px; will-change: transform; }
         @keyframes marqueeLeftToRight { 0% { transform: translate3d(-100%, 0, 0); } 100% { transform: translate3d(100dvw, 0, 0); } }
 
-        /* מסך נעילה */
+        /* מסך נעילה הממוקם בתוך ה-Container ומסתובב יחד איתו */
         .view-lock-screen {
-            position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important;
-            background: radial-gradient(circle, #1e1e30 0%, #0f0f1a 100%) !important; display: flex !important;
-            flex-direction: column !important; justify-content: center !important; align-items: center !important; z-index: 999999999 !important;
-            font-family: 'Varela Round', sans-serif !important; color: white !important; direction: rtl !important; box-sizing: border-box !important;
+            position: absolute !important; 
+            top: 0 !important; 
+            left: 0 !important; 
+            width: 100% !important; 
+            height: 100% !important;
+            background: radial-gradient(circle, #1e1e30 0%, #0f0f1a 100%) !important; 
+            display: flex !important;
+            flex-direction: column !important; 
+            justify-content: center !important; 
+            align-items: center !important; 
+            z-index: 999999999 !important;
+            font-family: 'Varela Round', sans-serif !important; 
+            color: white !important; 
+            direction: rtl !important; 
+            box-sizing: border-box !important;
         }
         .view-lock-box {
-            background: rgba(30, 30, 48, 0.75) !important; backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important;
-            padding: 25px !important; border-radius: 20px !important; box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
-            text-align: center !important; max-width: 360px !important; width: 80% !important; border: 1px solid rgba(255,255,255,0.1) !important; box-sizing: border-box !important;
+            background: rgba(30, 30, 48, 0.75) !important; 
+            backdrop-filter: blur(20px) !important; 
+            -webkit-backdrop-filter: blur(20px) !important;
+            padding: 25px !important; 
+            border-radius: 20px !important; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+            text-align: center !important; 
+            max-width: 360px !important; 
+            width: 80% !important; 
+            border: 1px solid rgba(255,255,255,0.1) !important; 
+            box-sizing: border-box !important;
         }
         .view-lock-box h2 { font-size: 1.6rem !important; color: #ffffff !important; margin: 0 0 8px 0 !important; font-weight: 800 !important; }
         .view-lock-box p { color: #a0aec0 !important; font-size: 0.95rem !important; margin: 0 0 15px 0 !important; }
@@ -140,6 +169,7 @@
 
 <div id="app-container">
 
+    <!-- מסך הנעילה נמצא בתוך ה-Container כך שהוא מסתובב מיידית לרוחב עם עליית הדף -->
     <div id="viewLock" class="view-lock-screen">
         <div class="view-lock-box">
             <h2>שילוט דיגיטלי נעול</h2>
@@ -194,33 +224,31 @@
 <script>
   const VIEW_PASSWORD = "5555";
 
-  // 🚀 הפונקציה החדשה שמאלצת את מערכת ההפעלה להסתובב לרוחב (כמו ביוטיוב)
+  // פונקציית מעבר למסך מלא ונעילת כיוון במערכת ההפעלה (לדפדפנים תומכים)
   async function forceLandscapeAndFullscreen() {
       const docEl = document.documentElement;
       try {
-          // 1. כניסה למצב מסך מלא (חובה כדי לנעול כיוון מסך)
           if (docEl.requestFullscreen) {
               await docEl.requestFullscreen();
           } else if (docEl.webkitRequestFullscreen) {
               await docEl.webkitRequestFullscreen();
           }
 
-          // 2. אילוץ סיבוב המכשיר לרוחב - עוקף את נעילת המשתמש בדפדפנים תומכים!
           if (screen.orientation && screen.orientation.lock) {
               await screen.orientation.lock('landscape');
           }
       } catch (err) {
-          console.log("סיבוב המערכת נחסם או לא נתמך, מופעל גיבוי CSS וירטואלי:", err);
+          console.log("נעילת כיוון דרך הדפדפן לא נתמכת, מסתמך על סיבוב ה-CSS הקיים:", err);
       }
   }
 
   function handleAccessAttempt() {
       const entered = document.getElementById('viewPasswordInput').value;
       if (entered === VIEW_PASSWORD) {
-          // הפעלת האילוץ האוטומטי לרוחב
+          // הפעלת מצב מסך מלא
           forceLandscapeAndFullscreen();
           
-          // העלמת מסך הנעילה
+          // העלמת מסך הנעילה לחשיפת השילוט
           document.getElementById('viewLock').style.setProperty('display', 'none', 'important');
       } else {
           document.getElementById('viewErrorMsg').style.setProperty('display', 'block', 'important');
