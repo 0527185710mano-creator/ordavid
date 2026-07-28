@@ -113,6 +113,7 @@
             .shabbat-info-text { font-size: clamp(8px, 0.9vw, 13px) !important; }
             
             .sub-box-fixed { font-size: clamp(11px, 1.8vw, 22px) !important; height: 18% !important; padding: 1vh 1vw !important; }
+            .fixed-center-title { font-size: clamp(18px, 2.5vw, 32px) !important; }
             .scroll-right-content, .scroll-left-content { font-size: clamp(11px, 1.8vw, 22px) !important; }
             .ticker { font-size: clamp(14px, 2.8vw, 32px) !important; }
             
@@ -196,12 +197,30 @@
             flex-shrink: 0;
         }
 
+        /* עיצוב מיוחד עבור הכותרת ברובריקה המרכזית התחתונה */
+        .fixed-center-title {
+            align-items: flex-start;
+            padding-top: 0.6vh;
+            font-size: clamp(20px, 2.5vw, 36px);
+            font-weight: 800;
+        }
+
         .scroll-right-content, .scroll-left-content { position: absolute; width: 100%; text-align: center; white-space: pre-line; font-size: clamp(11px, 1.4vw, 22px); font-weight: 600; color: #7a004b; transform: translate3d(0, 0, 0); backface-visibility: hidden; perspective: 1000px; will-change: transform; }
         .scroll-right-content { animation: scrollUpRight 28s linear infinite; }
         .scroll-left-content { animation: scrollUpLeft 24s linear infinite; }
 
         @keyframes scrollUpRight { 0% { transform: translate3d(0, 45vh, 0); opacity: 0; } 5% { opacity: 1; } 95% { opacity: 1; } 100% { transform: translate3d(0, -105%, 0); opacity: 0; } }
         @keyframes scrollUpLeft { 0% { transform: translate3d(0, 45vh, 0); opacity: 0; } 5% { opacity: 1; } 95% { opacity: 1; } 100% { transform: translate3d(0, -105%, 0); opacity: 0; } }
+
+        /* קונטיינר לעמודה המרכזית לתמיכה בתיבה העליונה והתחתונה */
+        .center-column-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 0;
+            gap: 1.5vh;
+            width: 100%;
+        }
 
         /* תיבה מרכזית – רקע לבן מלא ואחיד מקצה לקצה */
         .center-column {
@@ -213,7 +232,7 @@
             background: rgba(255, 255, 255, 0.95); 
             border: var(--center-border);
             border-radius: 26px;
-            height: 100%; 
+            flex: 1; 
             min-height: 0;
             padding: 2vh 2vw; 
             box-sizing: border-box; 
@@ -306,11 +325,14 @@
         </div>
 
         <!-- עמודה מרכזית -->
-        <div class="center-column" id="centerBox">
-            <h1 id="displayTitle">טוען כותרת...</h1>
-            <div class="center-column-content-wrapper" id="centerWrapper">
-                <p id="displayMessage">מתחבר לשרת אור דוד</p>
+        <div class="center-column-container">
+            <div class="center-column" id="centerBox">
+                <h1 id="displayTitle">טוען כותרת...</h1>
+                <div class="center-column-content-wrapper" id="centerWrapper">
+                    <p id="displayMessage">מתחבר לשרת אור דוד</p>
+                </div>
             </div>
+            <div class="sub-box-fixed fixed-center-title" id="displayFixedCenter">תורן חצר</div>
         </div>
 
         <!-- עמודה שמאלית (עם השעון למעלה) -->
@@ -503,6 +525,7 @@
           document.getElementById('displayScrollLeft').innerText = data.scrollLeft || "אין הודעות שמאל";
           document.getElementById('displayFixedRight').innerText = data.fixedRight || "לעילוי נשמת";
           document.getElementById('displayFixedLeft').innerText = data.fixedLeft || "הודעה קבועה";
+          document.getElementById('displayFixedCenter').innerText = data.fixedCenter || "תורנות חצר";
           document.getElementById('displayTicker').innerText = (data.ticker && data.ticker.trim() !== "") ? data.ticker : "אין עדכונים זורמים כרגע";
 
           if (data.parasha) {
