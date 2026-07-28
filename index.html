@@ -14,9 +14,9 @@
     <style>
         :root {
             --glass-bg: rgba(255, 255, 255, 0.92);
-            --thick-border: 4px solid #70593e; /* מסגרת עבה ובולטת בגוון זהב-אדמה עשיר */
-            --center-border: 5px solid #70593e; /* מסגרת עבה עוד יותר למרכז */
-            --box-shadow-bold: 0 12px 35px rgba(0, 0, 0, 0.3), 0 0 15px rgba(112, 89, 62, 0.3); /* הצללה חזקה שתבליט את הריבועים */
+            --thick-border: 4px solid #70593e; 
+            --center-border: 5px solid #70593e; 
+            --box-shadow-bold: 0 12px 35px rgba(0, 0, 0, 0.3), 0 0 15px rgba(112, 89, 62, 0.3); 
             --text-dark: #2d3748;
             --accent-gold: #8b7355;
             --accent-glow: rgba(139, 115, 85, 0.1);
@@ -31,7 +31,7 @@
             background-color: #000;
         }
 
-        /* 🔒 מסך נעילה עצמאי לחלוטין */
+        /* 🔒 מסך נעילה עצמאי */
         .view-lock-screen {
             position: fixed !important; 
             top: 0 !important; 
@@ -68,7 +68,7 @@
         .view-lock-box input { width: 100% !important; padding: 12px !important; border: 2px solid #4a5568 !important; background: rgba(255,255,255,0.05) !important; color: white !important; border-radius: 10px !important; text-align: center !important; font-size: 1.3rem !important; box-sizing: border-box !important; outline: none !important; margin-bottom: 12px !important; }
         .view-lock-box button { width: 100% !important; padding: 12px !important; background: linear-gradient(135deg, #3182ce 0%, #2b6cb0 100%) !important; color: white !important; border: none !important; border-radius: 10px !important; font-size: 1.1rem !important; font-weight: bold !important; cursor: pointer !important; }
 
-        /* קונטיינר ראשי של השילוט */
+        /* קונטיינר ראשי */
         #app-container {
             width: 100dvw;
             height: 100dvh;
@@ -85,7 +85,7 @@
             padding: 1.5vh 1.5vw 0 1.5vw;
         }
 
-        /* 🔄 אילוץ סיבוב מיידי לרוחב ב-CSS */
+        /* 🔄 אילוץ סיבוב מסך ב-CSS */
         @media (orientation: portrait) {
             .view-lock-screen {
                 width: 100dvh !important;
@@ -112,8 +112,7 @@
             .live-time-display { font-size: clamp(12px, 1.6vw, 22px) !important; }
             .shabbat-info-text { font-size: clamp(8px, 0.9vw, 13px) !important; }
             
-            .sub-box-fixed { font-size: clamp(11px, 1.8vw, 22px) !important; height: 18% !important; padding: 1vh 1vw !important; }
-            .fixed-center-title { font-size: clamp(18px, 2.5vw, 32px) !important; }
+            .sub-box-fixed { font-size: clamp(11px, 1.8vw, 22px) !important; height: 22% !important; padding: 1vh 1vw !important; }
             .scroll-right-content, .scroll-left-content { font-size: clamp(11px, 1.8vw, 22px) !important; }
             .ticker { font-size: clamp(14px, 2.8vw, 32px) !important; }
             
@@ -124,7 +123,7 @@
             .view-lock-box button { padding: 11px !important; font-size: 1rem !important; }
         }
 
-        /* תיבת השעון - משולבת בצורה זורמת בצד שמאל */
+        /* תיבת השעון */
         .hebrew-date-container {
             width: 100%; 
             text-align: center; 
@@ -147,7 +146,7 @@
         .shabbat-info-text { font-family: 'Assistant', sans-serif; font-size: clamp(9px, 0.85vw, 13px); font-weight: 600; color: #2d3748; line-height: 1.2; }
         .shabbat-info-text strong { color: var(--accent-gold); }
 
-        /* הגדרת גריד מיושר: עמודה ימנית (25%), מרכז (46%), עמודה שמאלית (25%) */
+        /* הגדרת גריד */
         .main-layout { 
             display: grid; 
             grid-template-columns: 25% 46% 25%; 
@@ -161,7 +160,7 @@
         }
         .column-container { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 1.5vh; width: 100%; }
 
-        /* תיבות גלילה עם מסגרת עבה וסגורה מכל הצדדים */
+        /* תיבות הודעה */
         .sub-box-scroll {
             flex: 1; 
             min-height: 0;
@@ -176,14 +175,15 @@
         }
 
         .sub-box-fixed {
-            height: 18vh; 
-            min-height: 45px;
+            height: 22vh; 
+            min-height: 55px;
             background: rgba(255, 249, 241, 0.96); 
             border: var(--thick-border);
             border-radius: 22px; 
             box-sizing: border-box; 
             padding: 1vh 1vw; 
             display: flex; 
+            flex-direction: column;
             justify-content: center;
             align-items: center; 
             text-align: center; 
@@ -197,12 +197,44 @@
             flex-shrink: 0;
         }
 
-        /* עיצוב מיוחד עבור הכותרת ברובריקה המרכזית התחתונה */
-        .fixed-center-title {
-            align-items: flex-start;
-            padding-top: 0.6vh;
-            font-size: clamp(20px, 2.5vw, 36px);
-            font-weight: 800;
+        /* עיצוב מותאם לתורן חצר בודד בזמן אמת - Assistant ExtraBold */
+        .single-duty-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+        .single-duty-title {
+            font-family: 'Assistant', sans-serif;
+            font-size: clamp(14px, 1.5vw, 22px);
+            color: #8b7355;
+            font-weight: 800; /* ExtraBold */
+            margin-bottom: 4px;
+        }
+        .single-duty-teacher {
+            font-family: 'Assistant', sans-serif;
+            font-size: clamp(20px, 2.3vw, 34px);
+            color: #1e293b;
+            font-weight: 800; /* ExtraBold */
+            line-height: 1.2;
+        }
+        .single-duty-time {
+            font-family: 'Assistant', sans-serif;
+            font-size: clamp(14px, 1.6vw, 22px);
+            color: #70593e;
+            font-weight: 800; /* ExtraBold */
+            margin-top: 4px;
+            background: rgba(112, 89, 62, 0.1);
+            padding: 2px 12px;
+            border-radius: 10px;
+        }
+        .no-duty-text {
+            font-family: 'Assistant', sans-serif;
+            font-size: clamp(16px, 1.8vw, 24px);
+            color: #a0aec0;
+            font-weight: 800; /* ExtraBold */
         }
 
         .scroll-right-content, .scroll-left-content { position: absolute; width: 100%; text-align: center; white-space: pre-line; font-size: clamp(11px, 1.4vw, 22px); font-weight: 600; color: #7a004b; transform: translate3d(0, 0, 0); backface-visibility: hidden; perspective: 1000px; will-change: transform; }
@@ -212,7 +244,6 @@
         @keyframes scrollUpRight { 0% { transform: translate3d(0, 45vh, 0); opacity: 0; } 5% { opacity: 1; } 95% { opacity: 1; } 100% { transform: translate3d(0, -105%, 0); opacity: 0; } }
         @keyframes scrollUpLeft { 0% { transform: translate3d(0, 45vh, 0); opacity: 0; } 5% { opacity: 1; } 95% { opacity: 1; } 100% { transform: translate3d(0, -105%, 0); opacity: 0; } }
 
-        /* קונטיינר לעמודה המרכזית לתמיכה בתיבה העליונה והתחתונה */
         .center-column-container {
             display: flex;
             flex-direction: column;
@@ -222,7 +253,6 @@
             width: 100%;
         }
 
-        /* תיבה מרכזית – רקע לבן מלא ואחיד מקצה לקצה */
         .center-column {
             display: flex; 
             flex-direction: column; 
@@ -277,7 +307,6 @@
             word-wrap: break-word;
         }
 
-        /* תיקון: מתיחת הסרגל התחתון מקצה לקצה על ידי ביטול ה-padding */
         .ticker-wrap { 
             width: calc(100% + 3vw); 
             margin-right: -1.5vw; 
@@ -312,7 +341,6 @@
 
 <div id="app-container">
 
-    <!-- גריד התוכן -->
     <div class="main-layout">
         <!-- עמודה ימנית -->
         <div class="column-container">
@@ -332,12 +360,12 @@
                     <p id="displayMessage">מתחבר לשרת אור דוד</p>
                 </div>
             </div>
-            <div class="sub-box-fixed fixed-center-title" id="displayFixedCenter">תורן חצר</div>
+            <!-- התיבה התחתונה המרכזית שמציגה את התורן בזמן אמת -->
+            <div class="sub-box-fixed" id="displayFixedCenter">טוען תורן חצר...</div>
         </div>
 
-        <!-- עמודה שמאלית (עם השעון למעלה) -->
+        <!-- עמודה שמאלית -->
         <div class="column-container">
-            <!-- שעון, תאריך ופרשת שבוע / זמני שבת -->
             <div class="hebrew-date-container">
                 <div class="hebrew-date-header" id="hebrewDateDisplay">טוען תאריך...</div>
                 <div class="live-time-display" id="timeDisplay">00:00:00</div>
@@ -367,6 +395,85 @@
 
 <script>
   const VIEW_PASSWORD = "5555";
+
+  // נתוני השעות והתורנים לפי ימי השבוע
+  const yardDuties = {
+      0: [ // יום ראשון
+          { start: "10:30", end: "10:55", teacher: "הרב שלמה סויסה שליט\"א" },
+          { start: "11:35", end: "11:50", teacher: "הרב עמנואל כהן שליט\"א" },
+          { start: "13:15", end: "13:45", teacher: "הרב שלמה סויסה שליט\"א" },
+          { start: "15:15", end: "15:25", teacher: "הרב דוד אבוקרט שליט\"א" }
+      ],
+      1: [ // יום שני
+          { start: "10:30", end: "10:55", teacher: "הרב שמעון שרעבי שליט\"א" },
+          { start: "11:35", end: "11:50", teacher: "הרב שלמה סויסה שליט\"א" },
+          { start: "13:15", end: "13:45", teacher: "הרב יעקב טראב שליט\"א" },
+          { start: "15:15", end: "15:25", teacher: "הרב אברהם רצון שליט\"א" }
+      ],
+      2: [ // יום שלישי
+          { start: "10:30", end: "10:55", teacher: "הרב יעקב טראב שליט\"א" },
+          { start: "19:00", end: "20:00", teacher: "הרב יוסף חיים אלקריף שליט\"א" },
+          { start: "13:15", end: "13:45", teacher: "הרב עמנואל כהן שליט\"א" },
+          { start: "15:15", end: "15:25", teacher: "הרב דוד אבוקרט שליט\"א" }
+      ],
+      3: [ // יום רביעי
+          { start: "10:30", end: "10:55", teacher: "הרב יוסף חיים אלקריף שליט\"א" },
+          { start: "11:35", end: "11:50", teacher: "הרב דוד אבוקרט שליט\"א" },
+          { start: "13:15", end: "13:45", teacher: "הרב שלמה סויסה שליט\"א" },
+          { start: "15:15", end: "15:25", teacher: "הרב אברהם רצון שליט\"א" }
+      ],
+      4: [ // יום חמישי
+          { start: "10:30", end: "10:55", teacher: "הרב דוד אבוקרט שליט\"א" },
+          { start: "11:35", end: "11:50", teacher: "הרב אלירן ברזילי שליט\"א" },
+          { start: "13:15", end: "13:45", teacher: "הרב עמנואל כהן שליט\"א" },
+          { start: "15:15", end: "15:25", teacher: "הרב דוד אבוקרט שליט\"א" }
+      ],
+      5: [ // יום שישי
+          { start: "10:30", end: "10:55", teacher: "הרב אלירן ברזילי שליט\"א" }
+      ],
+      6: [] // יום שבת
+  };
+
+  // פונקציית עזר להמרת זמן בפורמט HH:MM למספר דקות מתחילת היום
+  function timeToMinutes(timeStr) {
+      const parts = timeStr.split(':');
+      return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+  }
+
+  // פונקציה הבודקת מי התורן הנוכחי ומעדכנת את התיבה
+  function updateActiveYardDuty() {
+      const now = new Date();
+      const currentDay = now.getDay();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      
+      const todayDuties = yardDuties[currentDay] || [];
+      const container = document.getElementById('displayFixedCenter');
+
+      if (!container) return;
+
+      // חיפוש תורנות שפעילה ברגע זה
+      const activeDuty = todayDuties.find(d => {
+          const startMin = timeToMinutes(d.start);
+          const endMin = timeToMinutes(d.end);
+          return currentMinutes >= startMin && currentMinutes < endMin;
+      });
+
+      if (activeDuty) {
+          container.innerHTML = `
+              <div class="single-duty-container">
+                  <div class="single-duty-title">תורן חצר כעת:</div>
+                  <div class="single-duty-teacher">${activeDuty.teacher}</div>
+                  <div class="single-duty-time">${activeDuty.start} - ${activeDuty.end}</div>
+              </div>
+          `;
+      } else {
+          container.innerHTML = `
+              <div class="single-duty-container">
+                  <div class="no-duty-text">אין תורנות חצר כעת</div>
+              </div>
+          `;
+      }
+  }
 
   async function forceLandscapeAndFullscreen() {
       const docEl = document.documentElement;
@@ -496,6 +603,9 @@
           month = month.replace(/[׳״']/g, "");
           document.getElementById('hebrewDateDisplay').innerText = `${dayName} ${hebrewDay} ${month} ${hebrewYear}`;
 
+          // בדיקת התורנות הפעילה בכל שנייה מחדש
+          updateActiveYardDuty();
+
       } catch (e) { console.error(e); }
   }
   
@@ -525,7 +635,9 @@
           document.getElementById('displayScrollLeft').innerText = data.scrollLeft || "אין הודעות שמאל";
           document.getElementById('displayFixedRight').innerText = data.fixedRight || "לעילוי נשמת";
           document.getElementById('displayFixedLeft').innerText = data.fixedLeft || "הודעה קבועה";
-          document.getElementById('displayFixedCenter').innerText = data.fixedCenter || "תורנות חצר";
+          
+          updateActiveYardDuty();
+
           document.getElementById('displayTicker').innerText = (data.ticker && data.ticker.trim() !== "") ? data.ticker : "אין עדכונים זורמים כרגע";
 
           if (data.parasha) {
