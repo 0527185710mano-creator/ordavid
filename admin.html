@@ -18,7 +18,7 @@
             color: #e2e8f0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             direction: rtl;
-            min-height: 100dvh; /* 🌟 עודכן ל-100dvh למניעת חיתוך של המסך בניידים */
+            min-height: 100dvh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -129,7 +129,7 @@
         /* מסך נעילת מנהל */
         .lock-screen {
             position: fixed !important; top: 0 !important; left: 0 !important;
-            width: 100vw !important; height: 100dvh !important; /* 🌟 עודכן ל-100dvh למסך מלא מושלם בנייד */
+            width: 100vw !important; height: 100dvh !important;
             background-color: #0f0f12 !important; display: flex !important;
             flex-direction: column !important; justify-content: center !important;
             align-items: center !important; z-index: 999999999 !important;
@@ -230,8 +230,8 @@
 
         <!-- סרגל מבזקים תחתון -->
         <div class="form-group" style="margin-top: 15px;">
-            <label for="inputTicker">עדכונים רצים (סרגל תחתון)</label>
-            <input type="text" id="inputTicker" placeholder="הקלד כאן את המבזקים שירוצו בתחתית המסך..." required>
+            <label for="inputTicker">עדכונים רצים (סרגל תחתון - כל הודעה בשורה חדשה)</label>
+            <textarea id="inputTicker" rows="3" placeholder="הקלד כאן את המבזקים שירוצו בתחתית המסך (רד שורה בין הודעה להודעה)..." required></textarea>
         </div>
 
         <button type="submit" class="btn-submit">שמור ועדכן מסך שילוט</button>
@@ -258,6 +258,13 @@
       }
   }
 
+  // הוספת האזנה למקש Enter בתיבת סיסמת הניהול לנוחות שימוש מרבית
+  document.getElementById('adminPasswordInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') { 
+          checkAdminPassword(); 
+      }
+  });
+
   // הגדרות ה-Firebase שלך
   const firebaseConfig = {
     apiKey: "AIzaSyCNh5bjmUt4aQ86gh9UvDidaTWLSulbIrs",
@@ -272,6 +279,9 @@
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
+  // מפריד מעוצב עם תווי רווח מפורשים (בגודל של כ-10 אותיות מכל צד)
+  const SEPARATOR = "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0❖\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0";
+
   // טעינת הנתונים הנוכחיים מה-Firebase לתוך הטופס
   function loadExistingData() {
       database.ref('signage').once('value').then((snapshot) => {
@@ -283,7 +293,12 @@
               document.getElementById('inputFixedRight').value = data.fixedRight || "";
               document.getElementById('inputScrollLeft').value = data.scrollLeft || "";
               document.getElementById('inputFixedLeft').value = data.fixedLeft || "";
-              document.getElementById('inputTicker').value = data.ticker || "";
+              
+              if (data.ticker) {
+                  document.getElementById('inputTicker').value = data.ticker.split(SEPARATOR).join('\n');
+              } else {
+                  document.getElementById('inputTicker').value = "";
+              }
           }
       }).catch((error) => {
           console.error("שגיאה בטעינת הנתונים:", error);
@@ -297,6 +312,13 @@
       const statusElement = document.getElementById('statusMsg');
       statusElement.style.display = 'none';
 
+      const rawTicker = document.getElementById('inputTicker').value;
+      const formattedTicker = rawTicker
+          .split('\n')
+          .map(msg => msg.trim())
+          .filter(msg => msg !== '')
+          .join(SEPARATOR);
+
       const updatedData = {
           title: document.getElementById('inputTitle').value,
           message: document.getElementById('inputMessage').value,
@@ -304,7 +326,7 @@
           fixedRight: document.getElementById('inputFixedRight').value,
           scrollLeft: document.getElementById('inputScrollLeft').value,
           fixedLeft: document.getElementById('inputFixedLeft').value,
-          ticker: document.getElementById('inputTicker').value
+          ticker: formattedTicker
       };
 
       database.ref('signage').set(updatedData)
@@ -313,7 +335,6 @@
               statusElement.innerText = "הנתונים עודכנו בהצלחה ונשלחו למסך! 🎉";
               statusElement.style.display = 'block';
               
-              // העלמת הודעת ההצלחה אחרי 4 שניות
               setTimeout(() => {
                   statusElement.style.display = 'none';
               }, 4000);
